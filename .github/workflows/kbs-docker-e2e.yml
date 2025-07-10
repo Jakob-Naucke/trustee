@@ -35,6 +35,11 @@ jobs:
       with:
         components: rustfmt, clippy
 
+    - name: Install TPM build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libtss2-dev
+  
     - name: Build client
       run: |
         cargo build --manifest-path tools/kbs-client/Cargo.toml --no-default-features --features sample_only --release

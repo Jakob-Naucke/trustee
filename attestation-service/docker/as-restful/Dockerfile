@@ -53,10 +53,9 @@ RUN if [ "${ARCH}" = "x86_64" ] && ( [ "${VERIFIER}" = "all-verifier" ] || [ "${
     rm -rf /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/*; fi
 
 # Install TPM Runtime Dependencies
-RUN if [ "${VERIFIER}" = "all-verifier" ] || [ "${VERIFIER}" = "az-snp-vtpm-verifier" ] || [ "${VERIFIER}" = "az-tdx-vtpm-verifier" ]; \
-    then apt-get update && apt-get install libtss2-dev -y && \
+RUN apt-get update && apt-get install libtss2-dev -y && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/*; fi
+    rm -rf /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/*
 
 COPY --from=builder /usr/local/cargo/bin/restful-as /usr/local/bin/restful-as
 
