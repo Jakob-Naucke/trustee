@@ -6425,6 +6425,7 @@ dependencies = [
  "log",
  "openssl",
  "reqwest 0.12.22",
+ "rsa",
  "rstest",
  "s390_pv",
  "scroll",
@@ -6439,6 +6440,7 @@ dependencies = [
  "thiserror 2.0.12",
  "tokio",
  "tonic-build",
+ "tss-esapi",
  "veraison-apiclient",
  "x509-parser",
 ]
