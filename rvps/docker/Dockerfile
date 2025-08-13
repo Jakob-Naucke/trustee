@@ -10,7 +10,7 @@ WORKDIR /usr/src/rvps
 
 COPY . .
 
-RUN apt-get update && apt-get install protobuf-compiler -y
+RUN apt-get update && apt-get install protobuf-compiler gdb -y
 
 RUN if [ "$(uname -m)" != "${ARCH}" ]; then \
     export GCC_PACKAGE="gcc-${ARCH}-linux-gnu"; \
@@ -21,13 +21,9 @@ RUN if [ "$(uname -m)" != "${ARCH}" ]; then \
     export RUSTFLAGS="${RUSTFLAGS_ARGS}"; \
     apt-get install -y ${GCC_PACKAGE}; \
     rustup target add ${RUSTC_TARGET}; fi; \
-    cargo install --bin rvps --path rvps ${TARGET_FLAG} --locked
+    cargo install --debug --bin rvps --path rvps ${TARGET_FLAG} --locked
 
-FROM debian
-
-LABEL org.opencontainers.image.source="https://github.com/confidential-containers/trustee/rvps"
-
-COPY --from=builder /usr/local/cargo/bin/rvps /usr/local/bin/rvps
+RUN cp /usr/local/cargo/bin/rvps /usr/local/bin/rvps
 
 CMD ["rvps"]
 

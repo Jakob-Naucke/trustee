@@ -8,7 +8,7 @@ ARG NEBULA_VERSION=v1.9.5
 WORKDIR /usr/src/kbs
 COPY . .
 
-RUN apt-get update && apt install -y protobuf-compiler git sudo
+RUN apt-get update && apt install -y protobuf-compiler git sudo gdb
 
 ENV OS_ARCH=${ARCH}
 RUN if [ $(uname -m) != ${ARCH} ]; then \
@@ -27,10 +27,3 @@ RUN if [ "${NEBULA_CA_PLUGIN}" = "true" ]; then \
        curl -fSLO https://github.com/slackhq/nebula/releases/download/${NEBULA_VERSION}/nebula-$(echo ${BUILDPLATFORM} | sed 's/\//-/').tar.gz && \
        tar -C /usr/local/bin -xzf nebula-$(echo "${BUILDPLATFORM}" | sed 's/\//-/').tar.gz; \
     fi
-
-FROM ubuntu:22.04
-
-LABEL org.opencontainers.image.source="https://github.com/confidential-containers/trustee/kbs"
-
-COPY --from=builder /usr/local/bin/kbs /usr/local/bin/kbs
-COPY --from=builder /usr/local/bin/nebula-cert* /usr/local/bin/nebula-cert

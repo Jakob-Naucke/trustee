@@ -11,7 +11,7 @@ WORKDIR /usr/src/attestation-service
 COPY . .
 
 # Install TPM Build Dependencies
-RUN apt-get update && apt-get install -y protobuf-compiler clang libtss2-dev
+RUN apt-get update && apt-get install -y protobuf-compiler clang libtss2-dev gdb
 
 # Install TDX Build Dependencies
 RUN if [ "${ARCH}" = "x86_64" ]; then curl -L https://download.01.org/intel-sgx/sgx_repo/ubuntu/intel-sgx-deb.key | tee intel-sgx-deb.key | apt-key add - && \
@@ -28,12 +28,8 @@ RUN if [ "$(uname -m)" != "${ARCH}" ]; then \
     export RUSTFLAGS="${RUSTFLAGS_ARGS}"; \
     apt-get install -y ${GCC_PACKAGE}; \
     rustup target add ${RUSTC_TARGET}; fi; \
-    cargo install --path attestation-service --bin grpc-as --features grpc-bin,${VERIFIER} --locked ${TARGET_FLAG}
+    cargo install --debug --path attestation-service --bin grpc-as --features grpc-bin,${VERIFIER} --locked ${TARGET_FLAG}
 
-
-FROM ubuntu:22.04
-ARG ARCH=x86_64
-ARG VERIFIER=all-verifier
 
 LABEL org.opencontainers.image.source="https://github.com/confidential-containers/trustee/tree/main/attestation-service"
 
@@ -59,7 +55,7 @@ RUN if [ "${VERIFIER}" = "all-verifier" ] || [ "${VERIFIER}" = "az-snp-vtpm-veri
     apt-get clean && \
     rm -rf /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/*; fi
 
-COPY --from=builder /usr/local/cargo/bin/grpc-as /usr/local/bin/grpc-as
+RUN cp /usr/local/cargo/bin/grpc-as /usr/local/bin/grpc-as
 
 VOLUME /opt/confidential-containers/attestation-service
 

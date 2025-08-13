@@ -10,7 +10,7 @@ ifeq ($(filter $(ARCH),x86_64 s390x aarch64 arm64),)
 	$(error "Unsupported architecture: $(ARCH)")
 endif
 
-RELEASE_DIR := ../target/release
+RELEASE_DIR := ../target/debug
 TARGET_FLAG :=
 CARGO_ENV :=
 ifneq ($(BUILD_ARCH), $(ARCH))
@@ -76,7 +76,7 @@ build: background-check-kbs
 
 .PHONY: background-check-kbs
 background-check-kbs:
-	$(CARGO_ENV) cargo build -p kbs --locked --release --no-default-features --features $(FEATURES),$(AS_FEATURE) $(TARGET_FLAG)
+	$(CARGO_ENV) cargo build -p kbs --locked --no-default-features --features $(FEATURES),$(AS_FEATURE) $(TARGET_FLAG)
 
 .PHONY: passport-issuer-kbs
 passport-issuer-kbs:
@@ -90,7 +90,7 @@ passport-resource-kbs:
 
 .PHONY: cli
 cli:
-	$(CARGO_ENV) cargo build -p kbs-client --locked --release --no-default-features --features $(CLI_FEATURES) $(TARGET_FLAG)
+	$(CARGO_ENV) cargo build -p kbs-client --locked --no-default-features --features $(CLI_FEATURES) $(TARGET_FLAG)
 
 .PHONY: cli-static-linux
 cli-static-linux:
